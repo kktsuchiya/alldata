@@ -1,0 +1,288 @@
+WorksheetFunction.Subtotal関数
+================================================
+Application.WorksheetFunction.Subtotal(3, Range("A:A"))
+'引数1平均、2データ個数、3データ個数(空白除く)、4最大値 5最小値 6積を求める 7標本から標準偏差 8母集団から標準偏差
+’9合計を求める　10標本から分散を求める 11母集団から分散を求める
+
+
+
+マクロを置換するマクロ
+================================================
+Sub Sample3()
+    Dim Target As Workbook, buf As String, VBC, i As Long
+    Const Path As String = "C:\Tmp\"
+    buf = Dir(Path & "*.xls")
+    Do While buf <> ""
+        Set Target = Workbooks.Open(Path & buf)
+        With Target.VBProject.VBComponents("Module1").CodeModule
+            For i = 1 To .CountOfLines
+                If .Lines(i, 1) = "    Const StartDay As Date = #4/1/2006#" Then
+                    .ReplaceLine i, "    Const StartDay As Date = #9/1/2007#"
+                End If
+            Next i
+        End With
+        Target.Save
+        Target.Close
+        buf = Dir()
+    Loop
+End Sub
+
+
+使用されているセルを選択
+================================================
+ActiveSheet.UsedRange.Select
+
+
+セルが選択されているか判別
+================================================
+Sub セルが選択されているか判別()
+
+If TypeName(Selection) = "Range" Then
+msgbox "選択セル範囲："& Selection.Address
+
+Else
+msgbox "セルが選択されていません"
+
+End If
+
+End Sub
+
+
+
+重複データを削除する
+================================================
+Range("A1").currentRegion.RemoveDuplicates Columns:1,Header:=xlYes
+
+Columns:1　→　どこの列を参照して重複したデータを削除するか
+Header:=xlYes →　一行目が見出しかどうか？
+
+PC情報記録
+================================================
+Sub 記録()’PC情報
+Dim WNO　As Object, row As Long
+　Set WNO = CreateObject("WScript.Network")
+　With Sheet("スパイ")
+　　　row = .Range("A" & Rows.Count).End(xlUp).row + 1
+      .Cells(row,1) = WNO.UserName
+      .Cells(row,2) = WNO.ComputerName
+      .Cells(row,3) = WNO.UserDomain
+      .Cells(row,4) = Now
+End With
+
+End Sub
+
+他シートのセル選択する　
+================================================
+
+※複雑処理の際にエラーが出る可能性あり
+DoEvents
+Application.ScreenUpdating = True
+
+Application.Goto Worksheets("テスト").Range("A1"), True
+’↑Trueなら、セルが左上に来る、Falseなら、選択セルは移動してきた方向に依存
+
+Application.ScreenUpdating = False
+
+
+単語練習VBA
+================================================
+https://sunagitsune.com/excelvbaenglishlearning/
+' vba
+Option Explicit
+Public question
+Public point
+Public i
+
+Sub 出題()
+Application.Calculate
+If Worksheets("単語").Range("F2").Value = 0 Then
+Beep
+MsgBox ("全ての問題が完了しています")
+Else
+Range("B2").Font.ColorIndex = 2
+End If
+End Sub
+
+Sub OK()
+Range("B2").Font.ColorIndex = 3
+Set question = Worksheets("単語").Range("B:B"). _
+Find(Worksheets("テスト").Range("A2").Value)
+Set point = Sheets("単語").Cells(question.Row, 4)
+If point.Value < 10 Then
+point.Value = point.Value + 1
+End If
+End Sub
+
+Sub 確認()
+Range("B2").Font.ColorIndex = 3
+End Sub
+
+Sub 整理()
+Worksheets("単語").Range("B2:D10000").Sort Worksheets("単語").Range("D2")
+End Sub
+
+Sub クリア()
+Dim clearnumber
+Set clearnumber = Worksheets("単語").Range("F5")
+For i = 2 To clearnumber + 1
+Sheets("単語").Cells(i, 4).Value = 0
+Next
+End Sub
+
+Sub 計算方法手動()
+Application.Calculation = xlCalculationManual
+End Sub
+
+Sub 計算方法自動()
+Application.Calculation = xlCalculationAutomatic
+End Sub
+
+
+ExcelからAccess起動
+================================================
+
+Sub test_001()
+
+  Dim objACCESS As Object
+
+  'ExcelからAccess起動
+    'Accessのアプリケーションオブジェクトを作成する
+
+    Set objACCESS = CreateObject("Access.Application")
+    objACCESS.Visible = True     'Accessを表示ＯＮあたりまえか
+    objACCESS.UserControl = True 'Excelで操作するんだけど、ユーザーのTrueにしておく
+  'AccessのMDBを開く
+    'もちろん、次はファイルを開かないとね ファイル名 フルパスを渡す
+    objACCESS.OpenCurrentDatabase ActiveWorkbook.Path & "\売上管理.accdb"
+
+  '指定したフォームを開き、ユーザー名とパスワードのセット(Access側)
+    ' 指定のフォームを開く、ここでは、MENU_Login で ログインの画面を開く
+    objACCESS.DoCmd.OpenForm "Fメインメニュー", 0 'acNormal=0 フォームの名前を指定して開く
+    SendKeys "~"
+    'プライベートのログインボタンの関数 が コールできなかったので、
+   
+   
+   
+    objACCESS.Forms("Fメインメニュー")![請求書の印刷ボタン].SetFocus 'フォーカス セット後
+    objACCESS.Forms("Fメインメニュー")![請求書の印刷ボタン].SetFocus
+    DoEvents
+    Application.Wait Time:=Now + TimeValue("00:00:02")
+    SendKeys "{Enter}"
+   
+   
+   
+    SendKeys "~" '苦肉の策でリターンキーを送る
+
+    '↑でフォームが表示されるまでを待ちたかったので、３秒待ってみました。
+
+   
+   
+   SendKeys "{Enter}"
+       
+         
+         
+         Set objACCESS = Nothing  ' オブジェクト開放、もう私Excelから使用しないから
+
+End Sub
+
+
+
+OutlookとAccessの連携
+================================================
+Private Sub コマンド7_Click()
+
+'コード1｜このコード内で使用する変数を宣言
+Dim InboxFolder, subfolder, i, n, k, attno As Long
+Dim sender, mes, path1 As String
+Dim outlookObj As Outlook.Application
+Dim myNameSpace, objmailItem As Object
+Dim fso As FileSystemObject
+
+'コード2｜定義した変数に必要な項目をセット
+Set outlookObj = CreateObject("Outlook.Application")
+Set myNameSpace = outlookObj.GetNamespace("MAPI")
+Set InboxFolder = myNameSpace.GetDefaultFolder(6)
+n = 2
+
+Dim cnn As ADODB.Connection
+Dim rs As ADODB.Recordset
+
+Dim cnn1 As ADODB.Connection
+
+Set cnn = CurrentProject.Connection
+Set rs = New ADODB.Recordset
+
+Set cnn1 = CurrentProject.Connection
+
+Set subfolder = InboxFolder.Folders("一時保存")
+
+rs.Open "受信メール", cnn, adOpenKeyset, adLockOptimistic
+
+'コード4｜解析する受信メールの範囲を決める
+'MsgBox subfolder.Items.Count
+For i = 1 To subfolder.Items.Count
+Set objmailItem = subfolder.Items(i)
+
+'コード5｜受信メールの件数、受信日時、件名(タイトル)、送信者名、送信元のメールアドレス、内容(本文)を取得
+rs.AddNew
+rs!受信日時 = objmailItem.ReceivedTime
+rs!件名 = Left(objmailItem.Subject, 25)
+rs!相手 = objmailItem.SenderName
+rs!送信元アドレス = objmailItem.SenderEmailAddress
+rs!本文 = Left(objmailItem.Body, 200)
+
+rs.Update
+Next i
+
+cnn1.Close
+Set cnn1 = Nothing
+
+rs.Close
+Set rs = Nothing
+cnn.Close
+Set cnn = Nothing
+
+'コード7｜セットした変数を解除
+Set outlookObj = Nothing
+Set myNameSpace = Nothing
+
+MsgBox subfolder.Items.Count & "件のメールを保存しました"
+
+Set subfolder = Nothing
+End Sub
+
+
+
+ファイル移動VBA
+================================================
+Sub ファイル移動()
+Dim fso As FileSystemObject
+Set fso = New FileSystemObject
+Dim day As String
+day = Format(Date, "mmdd")
+Dim IN_DIR As String
+IN_DIR = "C:\Users\wanco2\Desktop\" & "メール送信" & day & "\"     'msgフォルダ
+
+
+Call fso.MoveFile("C:\Users\wanco2\Desktop\" & "メール送信" & day & "\" & "*.msg", "C:\Users\wanco2\Desktop\" & "メール送信済み" & day & "\") ' 複数のファイルをまとめて移動
+' Call fso.MoveFile("C:\Users\wanco2\Desktop\*", "D:\TipsFolder\")         ' 全てのファイルをまとめて移動
+
+' 後始末
+Set fso = Nothing
+End Sub
+
+
+
+
+================================================
+
+
+
+
+
+================================================
+
+
+
+
+================================================
