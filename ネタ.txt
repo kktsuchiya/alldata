@@ -1,0 +1,49 @@
+Sub neta01() 'ネタマクロ図形がきれい
+Dim CL As String, L1 As String, L2 As String, H1 As String, H2 As String, SA As Object, SL As Object, n As Long, i As Long, s As Variant
+
+Randomize
+With ActiveSheet
+.Cells.Interior.ColorIndex = 1
+CL = Int((50 * Rnd) + 1)
+L1 = Int((700 * Rnd) + 20)
+H1 = Int((450 * Rnd) + 20)
+Set SA = .Shapes.AddShape(msoShape5pointStar, L1, H1, 25, 25)
+SA.Name = "Merlion_" & SA.Name
+SA.Fill.ForeColor.SchemeColor = CL
+For n = 1 To 100
+CL = Int((50 * Rnd) + 1)
+L2 = Int((600 * Rnd) + 20)
+H2 = Int((300 * Rnd) + 20)
+Sleep 50
+SA.Top = H2 - SA.Width / 2
+Sleep 50
+SA.Left = L2 - SA.Height / 2
+Sleep 50
+SA.Fill.ForeColor.SchemeColor = CL
+Sleep 50
+Set SL = .Shapes.AddLine(L1, H1, L2, H2)
+Sleep 50
+SL.Name = "Merlion_" & SL.Name
+Application.StatusBar = SL.Name
+SL.Line.Weight = 0.75
+Sleep 50
+SL.Line.ForeColor.SchemeColor = CL
+L1 = L2
+H1 = H2
+Application.Wait [Now()] + 50 / 86400000
+Next
+SA.ZOrder msoBringToFront
+SA.Line.Visible = True
+SA.Line.ForeColor.SchemeColor = CL
+For i = 1 To 800 Step 60
+SA.Rotation = i / 10
+SA.Line.Weight = i
+DoEvents
+Next
+For Each s In .Shapes
+If s.Name Like "Merlion_*" Then s.Delete
+Application.Wait [Now()] + 50 / 86400000
+Next
+.Cells.Interior.ColorIndex = xlNone
+End With
+End Sub
