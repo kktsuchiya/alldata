@@ -1,0 +1,47 @@
+Sub chi_set()
+    Dim s0 As Object, shita, i, m, m1, m3, cnt As Long, AZ, AZ1, m2 As Variant: m1 = 2: m3 = 2: AZ = Array("265", "95", "270", "105", "110", "250", "108", "255", "260", "100", "90")
+ For Each s0 In ActiveSheet.Shapes
+    If s0.AutoShapeType = msoShape5pointStar Then
+        s0.Delete
+    Else
+        s0.ZOrder msoBringToFront
+        Randomize: shita = Int((20 * Rnd) + 300): AZ1 = Int((UBound(AZ) * Rnd))
+     If shita - s0.Top > 350 Then
+             cnt = 47
+        ElseIf shita - s0.Top > 300 Then
+            cnt = 41
+        ElseIf shita - s0.Top > 250 Then
+            cnt = 34
+        ElseIf shita - s0.Top > 200 Then
+            cnt = 27
+        ElseIf shita - s0.Top > 150 Then
+            cnt = 22
+        ElseIf shita - s0.Top > 100 Then
+            cnt = 16
+        ElseIf shita - s0.Top > 30 Then
+            cnt = 11: End If: Application.EnableCancelKey = xlErrorHandler: sleep 10
+
+         For i = 1 To cnt: m = Int((5 - 9 * Rnd))
+            Application.EnableCancelKey = xlErrorHandler:  Application.Wait [Now()] + 1 / 86400000
+            m2 = AZ(AZ1)
+            s0.Top = s0.Top + 1: s0.Rotation = m2 + m3: Application.Wait [Now()] + 1 / 86400000: sleep 1
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Left = s0.Left + m: Application.EnableCancelKey = xlErrorHandler: sleep 3
+            
+            s0.Top = s0.Top + 1: Application.Wait [Now()] + 1 / 86400000
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Top = s0.Top + 1: Application.EnableCancelKey = xlErrorHandler: Application.Wait [Now()] + 1 / 86400000
+            s0.Left = s0.Left + m:  Application.EnableCancelKey = xlErrorHandler: sleep 3
+            m3 = Int((-9 + 27 * Rnd))
+            Application.EnableCancelKey = xlErrorHandler
+        Next i
+     End If
+
+    Application.Wait [Now()] + 70 / 86400000: Application.EnableCancelKey = xlErrorHandler: sleep 10
+    Application.SendKeys "^c", True
+  Next s0
+    Set s0 = Nothing
+End Sub
