@@ -1,0 +1,31 @@
+Sub filecange()
+
+    Dim filePath As String
+    filePath = ThisWorkbook.Path & "\受信トレイ"
+    Dim fso As fileSystemObject
+    Dim shell As Object
+    Set shell = CreateObject("Shell.Application") '
+    Set fso = New fileSystemObject
+    Dim fl As Folder, f1, fll As Object
+    Set fl = fso.GetFolder(filePath)
+    Dim cnt, n, s As Long
+    Set fll = shell.Namespace(filePath & "\")
+'    cnt = 1
+    Dim f As File
+    For Each f In fl.Files
+'    For s = 1 To Len(f.Name)
+'    If AscW(Mid(f.Name, s, 1)) = 12881 Then
+'        n = 12881
+'    ElseIf AscW(Mid(f.Name, s, 1)) = 12882 Then
+'        n = 12882
+'    ElseIf AscW(Mid(f.Name, s, 1)) = 12883 Then
+'        n = 12883
+'    End If
+'ChrW (n)
+    Set f1 = fll.ParseName(f.Name)
+    f1.ModifyDate = Now
+
+'  Next s
+ Next f
+Set f1 = Nothing: Set fl = Nothing: Set fso = Nothing: Set shell = Nothing: Set fll = Nothing
+End Sub
