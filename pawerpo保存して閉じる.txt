@@ -1,0 +1,16 @@
+Sub pawerP()
+
+    Dim pp As Variant
+    Dim Fname As Variant
+    Dim ppPrs As PowerPoint.Presentation
+    Set pp = CreateObject("PowerPoint.Application")
+    pp.Visible = True
+
+    With pp
+    Fname = ThisWorkbook.Worksheets(1).Range("A2").Value
+    Set ppPrs = pp.Presentations.Open(Fname)
+    .ActivePresentation.SaveAs Fname
+    .Presentations(Fname).Close
+    .Quit
+ End With
+End Sub
