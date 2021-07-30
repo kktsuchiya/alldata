@@ -1,0 +1,22 @@
+Sub SelectDB()
+
+    Dim adoCn As Object 'ADOコネクションオブジェクト
+    Set adoCn = CreateObject("ADODB.Connection") 'ADOコネクションオブジェクトを作成
+    adoCn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & "C:\つなげるひろがる\01_開発\つなげるひろがるパネル.accdb" & ";" 'Accessファイルに接続
+    
+    Dim adoRs As Object 'ADOレコードセットオブジェクト
+    Set adoRs = CreateObject("ADODB.Recordset") 'ADOレコードセットオブジェクトを作成
+    
+    Dim strSQL As String
+    strSQL = "SELECT * FROM MSV_社員リスト WHERE 生年月日 Between #1980/3/1 0:0:0# And #2000/3/1 23:59:59#"
+    
+    adoRs.Open strSQL, adoCn 'SQLを実行して対象をRecordSetへ
+    Worksheets(1).Range("A1").CopyFromRecordset adoRs
+    
+    adoRs.Close 'レコードセットのクローズ
+    adoCn.Close 'コネクションのクローズ
+    
+    Set adoRs = Nothing
+    Set adoCn = Nothing  'オブジェクトの破棄
+
+End Sub
