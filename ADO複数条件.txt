@@ -1,0 +1,13 @@
+Sub 複数条件の検索3()
+    Dim コネクション As New ADODB.Connection
+    Dim レコード As New ADODB.Recordset
+    コネクション.Open ConnectionString:= _
+    "Provider=Microsoft.ACE.OLEDB.12.0;" & _
+    "Data Source=C:\つなげるひろがる\01_開発\つなげるひろがるパネル(SQLServer用).accdb;"
+    レコード.Open Source:="MSV_社員リスト", ActiveConnection:=コネクション, _
+    CursorType:=adOpenStatic
+    レコード.Filter = "生年月日>=#1980/1/1# And 生年月日 <=#1990/12/31#"
+    Range("A1").CopyFromRecordset data:=レコード
+    レコード.Close: Set レコード = Nothing
+    コネクション.Close: Set コネクション = Nothing
+End Sub
