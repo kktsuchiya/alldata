@@ -1,0 +1,31 @@
+Sub UpdateSelect()
+
+    Dim adoCn As Object 'ADOコネクションオブジェクト
+    Set adoCn = CreateObject("ADODB.Connection") 'ADOコネクションオブジェクトを作成
+    adoCn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & "C:\Users\wanco2\Desktop\売上管理.accdb" & ";" 'Accessファイルに接続
+    
+    Dim adoRs As Object 'ADOレコードセットオブジェクト
+    Set adoRs = CreateObject("ADODB.Recordset") 'ADOレコードセットオブジェクトを作成
+    
+    Dim strSQL As String
+    strSQL = "UPDATE T_kokyakuMST"
+    strSQL = strSQL & " SET 販売店 = Left([メール本文],InStr([メール本文],Chr(13))-1)"
+    adoRs.Open strSQL, adoCn 'SQLを実行して対象をRecordSetへ
+    adoCn.Close 'コネクションのクローズ
+    
+    adoCn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & "C:\Users\wanco2\Desktop\売上管理.accdb" & ";" 'Accessファイルに接続
+'    strSQL = "SELECT 顧客コード,顧客名,フリガナ,郵便番号,住所,建物名,電話番号,FAX番号,担当者名,メールアドレス,営業コード,取引ランク,印刷対象,メール本文,Left([メール本文],InStr([メール本文],Chr(13))-1)"
+    strSQL = ""
+    strSQL = "SELECT 顧客コード,顧客名,フリガナ,郵便番号,住所,建物名,電話番号,FAX番号,担当者名,メールアドレス,営業コード,取引ランク,印刷対象,メール本文,販売店"
+    strSQL = strSQL & " FROM T_kokyakuMST"
+    
+    adoRs.Open strSQL, adoCn 'SQLを実行して対象をRecordSetへ
+    Worksheets(1).Range("A2").CopyFromRecordset adoRs
+    
+    adoRs.Close 'レコードセットのクローズ
+    adoCn.Close 'コネクションのクローズ
+    
+    Set adoRs = Nothing
+    Set adoCn = Nothing  'オブジェクトの破棄
+
+End Sub
