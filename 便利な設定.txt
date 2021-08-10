@@ -1,0 +1,86 @@
+Option Explicit
+
+##########################################################################
+
+Private Sub btn閉じる_Click()
+    Dim strPath As String
+    Dim fileSize As Long
+    
+        strPath = CurrentProject.FullName
+        fileSize = FileLen(strPath)
+        
+        'ファイルサイズはバイト単位なので、以下の例ですと1MB
+        If fileSize > 100000 Then
+            SetOption "Auto Compact", True
+        Else
+            SetOption "Auto Compact", False
+        End If
+
+        DoCmd.Close acForm, Me.Name
+        DoCmd.Quit
+End Sub
+##########################################################################
+
+
+
+
+##########################################################################
+Private Sub Form_Open(Cancel As Integer)
+
+        '表示フォームサイズの設定
+        DoCmd.SelectObject acForm, Me.Name
+        DoCmd.MoveSize , , 5200, 3500
+
+End Sub
+
+Private Sub btn閉じる_Click()
+
+        DoCmd.Close acForm, Me.Name
+        
+End Sub
+
+Private Sub btnシフト有効_Click()
+
+        ChangeProperty "AllowBypassKey", dbBoolean, True
+        
+        MsgBox "シフト機能を有効にしました", vbInformation
+        
+End Sub
+
+Private Sub btnシフト無効_Click()
+
+        ChangeProperty "AllowBypassKey", dbBoolean, False
+        
+        MsgBox "シフト機能を無効にしました", vbInformation
+        
+End Sub
+
+
+
+
+'シフトの有効、無効
+Function ChangeProperty(strPropName As String, varPropType, varPropValue) As Integer
+
+On Error GoTo err_ChangeProperty
+
+    Dim dbs As DAO.Database, prp As DAO.Property
+    Const conPropNotFoundError = 3270
+    Set dbs = CurrentDb
+    dbs.Properties(strPropName) = varPropValue
+    ChangeProperty = True
+
+    Exit Function
+
+err_ChangeProperty:
+
+    If Err = conPropNotFoundError Then ' プロパティが見つかりません。
+        Set prp = dbs.CreateProperty(strPropName, varPropType, varPropValue)
+        dbs.Properties.Append prp
+        Resume Next
+    Else
+        ChangeProperty = False ' 認識できないエラー。
+        Exit Function
+    End If
+
+End Function
+##########################################################################
