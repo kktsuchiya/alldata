@@ -1,0 +1,75 @@
+Private Sub ExcelValue_Click()
+    Call ExcelData(Me)
+End Sub
+
+
+Function ExcelData(frm As Form)
+    On Error GoTo Err_cmdExcel_Click
+    'DAOで抽出結果のクローンを作成
+    Dim xls As Object 'Excel.Applicationを代入するオブジェクト変数
+    Dim wkb As Object 'Excel.Wookbookを代入するオブジェクト変数
+    Dim rst As DAO.Recordset '現在のレコードセットを入れる変数
+    Dim idx As Long  'フィールド数変数
+    Dim xlsF As Workbook
+    
+    Set rst = Nothing 'データリストの初期化
+    Set rst = frm.RecordsetClone  'フォームのレコードセットのクローンを代入
+    'レコードが存在しない場合、処理を中止
+    If rst.BOF = True And rst.EOF = True Then
+        MsgBox "出力出来るデータがありません。", vbOKOnly + vbExclamation, "出力不可"
+        'レコードセットを閉じる
+        rst.Close: Set rst = Nothing
+        Exit Function
+    End If
+    'レコードが存在する場合、Excelに出力
+    'レコードセットの最初のデータにカーソルを移動
+    rst.MoveFirst
+ 
+    'Excelファイルを内部的に作成
+    Set xls = CreateObject("Excel.Application")
+    xls.Visible = True
+    '作成されたExcelファイルにワークブックを追加
+    Dim myPath As String: Dim xlsFile As String
+    myPath = "C:\Users\tadas\Desktop\"
+    xlsFile = "test.xlsx"
+    xls.Workbooks.Open myPath & xlsFile
+    
+    xls.UserControl = True
+ 
+    '追加されたワークブックに、レコードセットのデータをコピー
+
+    With xls.Worksheets(1)
+
+        For idx = 1 To rst.Fields.Count
+
+            .Cells(1, idx).Value = rst.Fields(idx - 1).Name
+
+        Next
+        .Range("A2").CopyFromRecordset Data:=rst
+    End With
+    'レコードセットを閉じる
+    rst.Close: Set rst = Nothing
+
+    'Excelデータを表示
+'    xlsfile.Visible = True
+    'メモリに展開されたExcel用オブジェクト変数を開放
+
+
+'    Set xls = Nothing
+Exit_cmdExcel_Click:
+    Exit Function
+
+Err_cmdExcel_Click:
+
+    'エラーの場合、エラーNOと内容を表示
+'    MsgBox Err.Number & Err.Description
+
+    MsgBox "エラーのため、Excelへ出力できません。" & vbCrLf & "一旦フォームを閉じ、再度トライしてください。", _
+    vbOKOnly + vbCritical, "Excel出力不可！"
+    
+    Set rst = Nothing
+    Set xls = Nothing
+    Resume Exit_cmdExcel_Click
+
+End Function
+
