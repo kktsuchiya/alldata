@@ -1,0 +1,31 @@
+Option Explicit
+
+Public cn As ADODB.Connection
+Public strcn As String
+
+Public Sub データベース接続()
+'-----------------------------------------------------------------------------------------
+'ADOコネクションを開く(ADO)
+'-----------------------------------------------------------------------------------------
+        Set cn = CreateObject("ADODB.Connection")
+        strcn = "Provider=SQLOLEDB.1" & _
+        ";Persist Security Info=False;Data Source=DESKTOP-3K4R58D\SQLEXPRESS" & _
+        ";Initial Catalog=NK_DB" & _
+        ";password=1234" & _
+        ";persist security info=True" & _
+        ";user id=admin;"
+        cn.Open strcn
+End Sub
+
+'****************************************************
+'--------------------------------
+    ' データベース接続				
+    '--------------------------------
+    Dim cn As ADODB.Connection
+    Set cn = CreateObject("ADODB.Connection")
+
+    'Windows認証で接続する場合
+    cn.ConnectionString	= "Provider=" & PROVIDER _
+                        & ";Data Source=" & Server名 _
+                        & ";Initial Catalog=" & DATABASE _
+                        & ";Trusted_Connection=Yes"
