@@ -1,0 +1,32 @@
+Private Sub 集計()
+    Dim sh1 As Worksheet: Dim sh2 As Worksheet
+    Dim maxr As Long: Dim i, i2, m1 As Long
+    Dim diff As String: i = 2: m1 = 2
+    
+    Set sh2 = Worksheets("moto")
+    maxr = sh2.Cells(Rows.Count, 1).End(xlUp).row 'A列最大行取得
+    
+    Set sh1 = Worksheets("moto2")
+    For i2 = 2 To maxr
+
+    Do Until sh1.Cells(m1, 1).Value <> sh2.Cells(i, 12).Value
+    If sh2.Cells(i, 13).Value = "更新" Or sh2.Cells(i, 13).Value = "保有" And _
+    sh1.Cells(m1, 1).Value = sh2.Cells(i, 12).Value Then
+       sh1.Cells(m1, 2).Value = sh1.Cells(m1, 2).Value + 1
+       i = i + 1
+    ElseIf sh2.Cells(i, 13).Value = "新規" And _
+       sh1.Cells(m1, 1).Value = sh2.Cells(i, 12).Value Then
+       sh1.Cells(m1, 3).Value = sh1.Cells(m1, 3).Value + 1
+        i = i + 1
+    End If
+
+    If i > maxr Then
+     Exit Do
+    End If
+
+    Loop
+    m1 = m1 + 1
+  Next i2
+  Set sh2 = Nothing: Set sh1 = Nothing
+  
+End Sub
