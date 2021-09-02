@@ -1,0 +1,18 @@
+入力された文字を統一
+
+
+Private Sub Sample067()
+    Dim temp(1 To 2) As String
+    
+    temp(1) = "AccessＶＢＡ"              '変数tempに「AccessＶＢＡ」を代入する
+    
+    Debug.Print StrConv(temp(1), vbUpperCase)      '変数tempの値をすべて大文字に変換する
+    Debug.Print StrConv(temp(1), vbLowerCase)      '変数tempの値をすべて小文字に変換する
+    Debug.Print StrConv(temp(1), vbWide)           '変数tempの値をすべて全角文字に変換する
+    Debug.Print StrConv(temp(1), vbNarrow)         '変数tempの値をすべて半角文字に変換する
+    
+    temp(2) = StrConv(temp(1), vbNarrow)
+    Debug.Print Format(temp(2), ">") 'すべて半角大文字に変換する1
+    Debug.Print UCase(temp(2)) 'すべて半角大文字に変換する2
+End Sub
+
