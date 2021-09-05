@@ -324,8 +324,47 @@ Sub Sample596_2(ByVal Path As String)
     End With
 End Sub
 ========================================================================
-⑲
+⑲ 選択クエリ作成/削除クエリ作成/更新クエリ作成　/　クエリの削除
 ========================================================================
+Private Sub クエリ作成()'選択クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "SELECT 会員ID,氏名 FROM T_Master"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_Master2", SQL)
+    Set Qdf = CurrentDb.CreateQueryDef("", SQL)クエリは作成しない
+    Set Qdf = Nothing
+    Application.RefreshDatabaseWindow
+End Sub
+Private Sub 削除クエリ作成()　'削除クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "DELETE * FROM Q_Master WHERE 会員ID = 'A020'"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_Master削除", SQL)
+    Set Qdf = Nothing
+
+    DoCmd.OpenQuery "Q_Master削除"
+    DoCmd.Close acQuery, "Q_Master削除"
+End Sub
+Private Sub 更新クエリ作成()　'更新クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "UPDATE T_Master SET 氏名 = '坂内 ゆき' WHERE 氏名 = '原 ゆき'"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_更新", SQL)
+    Set Qdf = Nothing
+
+    DoCmd.OpenQuery "Q_更新"
+    DoCmd.Close acQuery, "Q_更新"
+    Application.RefreshDatabaseWindow
+End Sub
+--------------------------------------
+Private Sub クエリ削除()
+    DoCmd.DeleteObject acQuery, "Q_更新"
+    Application.RefreshDatabaseWindow
+End Sub
+
+=====================================================================
+=====================================================================
+
 
 
 
