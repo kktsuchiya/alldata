@@ -1,0 +1,9 @@
+Sub ウインドウ枠固定()
+    Worksheets("sheet1").Select
+    Application.Goto Range("A1")
+    Selection.AutoFilter
+    
+    Rows(2).Select
+    ActiveWindow.FreezePanes = True
+    Application.Goto
+End Sub
