@@ -1,0 +1,405 @@
+========================================================================
+①入力された文字列を半角大文字へ変換し統一させる◎
+========================================================================
+Private Sub Sample067()
+    Dim temp(1 To 2) As String
+    temp(1) = "AccessＶＢＡ"              '変数tempに「AccessＶＢＡ」を代入する
+    
+    Debug.Print StrConv(temp(1), vbUpperCase)      '変数tempの値をすべて大文字に変換する
+    Debug.Print StrConv(temp(1), vbLowerCase)      '変数tempの値をすべて小文字に変換する
+    Debug.Print StrConv(temp(1), vbWide)           '変数tempの値をすべて全角文字に変換する
+    Debug.Print StrConv(temp(1), vbNarrow)         '変数tempの値をすべて半角文字に変換する
+    
+    temp(2) = StrConv(temp(1), vbNarrow)
+    Debug.Print Format(temp(2), ">") 'すべて半角大文字に変換する1
+    Debug.Print UCase(temp(2)) 'すべて半角大文字に変換する2
+End Sub
+========================================================================
+②Excelファイルを開いてデータを読み取り、Accessのテーブルにデータを追加◎
+========================================================================
+Private Sub Sample450()
+    Dim vPath As String     'インポートするファイル名を代入する変数を宣言する
+    
+    'このデータベースと同じフォルダにある「Data」フォルダ内の
+    '「Sample450.xlsx」ファイルを指定する
+    vPath = CurrentProject.Path & "\Data\Sample450.xlsx"
+
+    '指定したファイルを「T_Sample450」テーブルにインポートする
+    DoCmd.TransferSpreadsheet acImport, , "T_Sample450", _
+        vPath, True
+End Sub
+========================================================================
+③txtファイルを開いてデータを読み取り、Accessのテーブルにデータを追加◎
+========================================================================
+Private Sub Sample451()
+    Dim vPath As String     'インポートするファイル名を代入する変数を宣言する
+    
+    'このデータベースと同じフォルダにある「Data」フォルダ内の
+    '「Sample451.txt」ファイルを指定する
+    vPath = CurrentProject.Path & "\Data\Sample451.txt"
+
+    '指定したファイルを「T_Sample451」テーブルにインポートする
+    DoCmd.TransferText acImportDelim, , "T_Sample451", _
+        vPath, True
+End Sub
+========================================================================
+④他のAccessファイルのテーブルを ThisAccessへテーブル追加〇
+========================================================================
+Private Sub Sample452()
+    '「gokui16_2.accdb」データベースの「T_Sample452」テーブルを
+    '「T_Sample452」という名前でインポートする
+    DoCmd.TransferDatabase acImport, "Microsoft Access", _
+        CurrentProject.Path & "\gokui16_2.accdb", acTable _
+        , "T_Sample452", "T_Sample452"
+End Sub
+========================================================================
+⑤ThisAccessのテーブルを指定PathにExcelファイルとしてエクスポートする◎
+========================================================================
+Private Sub Sample453()
+    Dim vPath As String     'ファイルのパスを代入する変数を宣言する
+    
+    'カレントデータベースと同じフォルダの「Sample453」フォルダの
+    '「T_Sample453.xlsx」ファイルのパスを変数に代入する
+    vPath = CurrentProject.Path & "\Sample453\T_Sample453.xlsx"
+
+    '指定したパスに、「T_Master」テーブルをExcel形式でエクスポートする
+    DoCmd.TransferSpreadsheet acExport, acSpreadsheetTypeExcel12Xml _
+        , "T_Master", vPath, True
+End Sub
+========================================================================
+⑥ThisAccessのテーブルを指定Pathにtxtファイルとしてエクスポートする〇
+========================================================================
+Private Sub Sample454()
+    Dim vPath As String     'ファイル名を代入する変数を宣言する
+    
+    'このデータベースと同じフォルダにある「Sample454」フォルダ内の
+    '「Sapmle451.txt」ファイルを指定する
+    vPath = CurrentProject.Path & "\Sample454\Sample454.txt"
+
+    '「T_Master」テーブルを指定したファイルにエクスポートする
+    DoCmd.TransferText acExportDelim, , "T_Master", _
+        vPath, True
+End Sub
+========================================================================
+⑦ThisAccessへテーブルを他のAccessファイルへテーブル追加〇
+========================================================================
+Private Sub Sample455()
+    '「gokui16_2.accdb」データベースに「T_Sample455」テーブルを
+    '「T_Sample455」という名前でエクスポートする
+    DoCmd.TransferDatabase acExport, "Microsoft Access", _
+        CurrentProject.Path & "\gokui16_2.accdb", acTable _
+        , "T_Sample455", "T_Sample455"
+End Sub
+========================================================================
+⑧PDFとして出力する〇
+========================================================================
+Private Sub Sample466()
+    '「T_Master」テーブルを「会員一覧.pdf」として出力する
+    DoCmd.OutputTo acOutputTable, "T_Master", _
+        acFormatPDF, "会員一覧.pdf", True
+End Sub
+
+Private Sub Sample467()
+    '「R_Order」レポートを「売上一覧.pdf」として出力する
+    DoCmd.OutputTo acOutputReport, "R_Order", _
+        acFormatPDF, "売上一覧.pdf", True
+End Sub
+========================================================================
+⑨Excelファイルへクエリを貼り付ける〇
+========================================================================
+Private Sub Sample475()
+    Dim db As DAO.Database      'データベースへの参照を代入する変数を宣言する
+    Dim rs As DAO.Recordset     'レコードセットへの参照を代入する変数を宣言する
+    Dim xlApp As Object      'Excelへの参照を代入する変数を宣言する
+    Dim wb As Object        'ワークブックへの参照を代入する変数を宣言する
+    Dim sh As Object        'ワークシートへの参照を代入する変数を宣言する
+    Dim vPath As String     '開くファイル名を代入する変数を宣言する
+
+    '開くファイル名を指定する
+    vPath = CurrentProject.Path & "\Sample475.xlsx"
+
+    'Excelアプリケーションを起動する
+    Set xlApp = CreateObject("Excel.Application")
+    '指定してブックを開く
+    Set wb = xlApp.Workbooks.Open(vPath)
+    'ワークシートへの参照を変数に代入する
+    Set sh = wb.Worksheets(1)
+    
+    Set db = CurrentDb()        '現在のデータベースに接続する
+    'テーブル「Q_Master」をレコードセットとして開く
+    Set rs = db.OpenRecordset("Q_Master", dbOpenDynaset)
+    '取得したレコードセットをセルA1以降に張り付ける
+    sh.Range("A1").CopyFromRecordset rs
+    
+    xlApp.Visible = True 'Excelを見えるようにする
+End Sub
+========================================================================
+⑩Outlookを開いてメールを読み込み〇
+========================================================================
+Private Sub Sample480()
+    Dim db As DAO.Database      'データベースへの参照を代入する変数を宣言する
+    Dim rs As DAO.Recordset     'レコードセットへの参照を代入する変数を宣言する
+    Dim olApp As Object         'Outlookへの参照を代入する変数を宣言する
+    Dim vNamespase As Object    '名前空間への参照を代入する変数を宣言する
+    Dim vFolder As Object       'フォルダへの参照を代入する変数を宣言する
+    Dim i As Long               '繰り返し処理用の変数を宣言する
+    
+    Set db = CurrentDb()        '現在のデータベースに接続する
+    
+    'テーブル「T_Sample482」をレコードセットとして開く
+    Set rs = db.OpenRecordset("T_Sample480", dbOpenDynaset)
+    
+    'Outlookを起動する
+    Set olApp = CreateObject("Outlook.Application")
+    '名前空間を取得する
+    Set vNamespase = olApp.GetNamespace("MAPI")
+    '対象フォルダを選択する
+    Set vFolder = vNamespase.PickFolder
+    
+    '対象フォルダ内のすべてのアイテムに対して処理を行う
+    For i = 1 To vFolder.Items.Count
+        If vFolder.Items(i).Class = 43 Then   'メールアイテムの場合の処理
+            rs.AddNew           'レコードを追加する
+            '送信者名を取得
+            rs!送信者 = vFolder.Items(i).SenderName
+            'メールのタイトルを取得
+            rs!タイトル = vFolder.Items(i).Subject
+            '受信日時を取得
+            rs!受信日時 = vFolder.Items(i).ReceivedTime
+            '本文を取得
+            rs!本文 = vFolder.Items(i).Body
+            rs.Update       'レコードセットを更新する
+        End If
+    Next
+    rs.Close        'レコードセットを閉じる
+    db.Close        'データベースを閉じる
+End Sub
+========================================================================
+⑪複数の文字をLIKEで抽出⇒  [田子]　田と子を含むレコード◎
+========================================================================
+    '「T_UserMaster」テーブルから「氏名」に「田」または「子」を含む
+    'レコードを取得するSQL文を作成する
+    vSQL = "SELECT 氏名 FROM T_UserMaster "
+    vSQL = vSQL & "WHERE 氏名 LIKE '*[田子]*';"
+========================================================================
+⑫HAVINGもWHEREも条件を絞り込むがHAVINGはWHEREより実行が遅い　GROUP BYの後に処理　〇
+========================================================================
+ '「T_Order」テーブルから「商品ID」グループ化し
+    '「商品ID」が「Y」から始まるレコードを取得するSQL文を作成する
+    vSQL = "SELECT 商品ID FROM T_Order "
+    vSQL = vSQL & "GROUP BY 商品ID HAVING 商品ID LIKE 'Y*';"
+    'HAVINGの方が処理がWHEREより実行が遅い
+
+※GROUPBYを実施して絞り込みをかける場合はHAVINGを使う
+
+FROM → WHERE → GROUPBY → HAVING → SELECT → ORDERBY
+========================================================================
+⑬SELECTで抽出する際に新たにテーブルを作成し格納する ◎
+========================================================================
+Private Sub Sample526()
+    Dim db As DAO.Database      'データベースへの参照を代入する変数を宣言する
+    Dim vSQL As String          'SQL文を代入する変数を宣言する
+    
+    '「T_Master」テーブルから「会員ID」と「氏名」フィールドを持つ
+    '「T_Sample526」テーブルを作成するSQL文を作成する
+    vSQL = "SELECT 会員ID, 氏名 INTO T_Sample526 "
+    vSQL = vSQL & "FROM T_Master;"
+    
+    Set db = CurrentDb      'データベースに接続する
+    
+    '確認のメッセージを表示する
+    If MsgBox("「T_Sample526」テーブルを作成しますか", vbYesNo) _
+        = vbYes Then
+        db.Execute vSQL, dbFailOnError  'SQL文を実行する
+    End If
+    db.Close        'データベースを閉じる
+End Sub
+========================================================================
+⑭テーブルのコピー　◎
+========================================================================
+Private Sub Sample14()
+    '「T_Sample14」テーブルをコピーして「T_Sample14_bk」を作成する
+    DoCmd.CopyObject , "T_Sample533_bk", acTable, "T_Sample14"
+End Sub
+-------------------------------------------------------------------------
+Private Sub Sample14_2()
+    '「Q_Master」クエリをコピーして「"Q_SampleX」クエリを作成する
+    DoCmd.CopyObject , "Q_SampleX", acQuery, "Q_Master"
+End Sub
+========================================================================
+⑮他のAccessからテーブルのコピー　〇
+========================================================================
+Private Sub Sample15()　							'元ファイル　　　　　　　　　　　　　　　　　　　　　　　
+	DoCmd.TransferDatabase acImport, "Microsoft Access", "C:\Users\tadas\Desktop\AccessVBA_GOKUI1\19Sho\gokui19_2.accdb", _
+　　　　 　　　'元テーブル, 新テーブル名
+	acTable, "T_Order","T_Samplexx"
+End Sub
+========================================================================
+⑯カラムのデータを重複なくDictionaryに追加し表示する
+========================================================================
+Private Sub Sample574()
+    Dim db As DAO.Database
+    Dim rs As DAO.Recordset
+    Dim vSQL As String
+    Dim vList As Collection
+    Dim msg As String
+    Dim i As Long
+    
+    vSQL = "SELECT * FROM T_UserMaster;"
+    Set db = CurrentDb
+    Set rs = db.OpenRecordset(vSQL)
+    
+    'Collectionオブジェクトを作成する
+    Set vList = New Collection
+    
+    'エラー処理を開始する
+    On Error Resume Next
+    'レコードセットのデータをDictionaryオブジェクトに追加する
+    Do Until rs.EOF
+'        vList.Add rs.Fields("都道府県").Value　'重複データもすべて登録
+        vList.Add rs.Fields("都道府県").Value, rs.Fields("都道府県").Value '重複を登録しない
+        rs.MoveNext
+    Loop
+    On Error GoTo 0 'エラー処理を終了する
+        
+    'データを変数msgに取得する
+    For i = 1 To vList.Count
+        msg = msg & vList.Item(i) & vbCrLf
+    Next
+    
+    '取得結果をメッセージボックスに表示する
+    MsgBox "都道府県名一覧：" & vbCrLf & msg
+End Sub
+========================================================================
+⑰番外　PC性能比較に…
+========================================================================
+Option Explicit
+'AccessのバージョンによってAPIの宣言を変える
+#If VBA7 Then
+    '64bitバージョンのWindowsAPIの宣言
+    Declare PtrSafe Function timeGetTime Lib "winmm.dll" () As Long
+#Else
+    '32bitバージョンのWindowsAPIの宣言
+    Declare Function timeGetTime Lib "winmm.dll" () As Long
+#End If
+
+Private Sub Sample595()
+    Dim StartTime As Long
+    Dim i As Long
+    StartTime = timeGetTime
+    
+    Do
+        i = i + 1
+    Loop Until i > 1000000000 'DESKTOP-3K4R58D⇒　21秒
+    
+    '経過時間をメッセージボックスに表示する
+    MsgBox "経過時間：" & timeGetTime - StartTime & "ミリ秒"
+End Sub
+========================================================================
+⑱ファイル一覧検索用に…
+========================================================================
+Sub Sample596_1()
+    'Sample596_2を呼び出す
+    Sample596_2 CurrentProject.Path
+End Sub
+Sub Sample596_2(ByVal Path As String)
+    Dim buf As String
+    Dim fso As Object
+    
+    buf = Dir(Path & "\*.*")
+    
+    'ファイルが見つからなくなるまで処理を繰り返す
+    Do While buf <> ""
+        'イミディエイトウィンドウにファイル名を表示する
+        Debug.Print buf
+        buf = Dir()  '次のファイルを検索する
+    Loop
+    'FileSystemObjectオブジェクトを利用する
+    With CreateObject("Scripting.FileSystemObject")
+        'サブフォルダを検索する
+        For Each fso In .GetFolder(Path).SubFolders
+            'サブフォルダをこのプロシージャに渡し、再起処理をする
+            Sample596_2 fso.Path
+        Next
+    End With
+End Sub
+========================================================================
+⑲ 選択クエリ作成/削除クエリ作成/更新クエリ作成　/　クエリの削除
+========================================================================
+Private Sub クエリ作成()'選択クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "SELECT 会員ID,氏名 FROM T_Master"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_Master2", SQL)
+    Set Qdf = CurrentDb.CreateQueryDef("", SQL)クエリは作成しない
+    Set Qdf = Nothing
+    Application.RefreshDatabaseWindow
+End Sub
+Private Sub 削除クエリ作成()　'削除クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "DELETE * FROM Q_Master WHERE 会員ID = 'A020'"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_Master削除", SQL)
+    Set Qdf = Nothing
+
+    DoCmd.OpenQuery "Q_Master削除"
+    DoCmd.Close acQuery, "Q_Master削除"
+End Sub
+Private Sub 更新クエリ作成()　'更新クエリ
+    Dim Qdf As QueryDef
+    Dim SQL As String
+    SQL = "UPDATE T_Master SET 氏名 = '坂内 ゆき' WHERE 氏名 = '原 ゆき'"
+    Set Qdf = CurrentDb.CreateQueryDef("Q_更新", SQL)
+    Set Qdf = Nothing
+
+    DoCmd.OpenQuery "Q_更新"
+    DoCmd.Close acQuery, "Q_更新"
+    Application.RefreshDatabaseWindow
+End Sub
+--------------------------------------
+Private Sub クエリ削除()
+    DoCmd.DeleteObject acQuery, "Q_更新"
+    Application.RefreshDatabaseWindow
+End Sub
+
+Private SubExcelからシートを指定してインポート()
+Dim strPath As String
+DoCmd.TransferSpreadsheet acImport, acSpreadsheetTypeExcel9, "テーブル名", _
+CreateObject("wScript.Shell").SpecialFolders("strPath") & "\エクセルファイル名.xls", True, "シート名!"
+
+=====================================================================
+=====================================================================
+sub ウインドウ枠固定()
+    Worksheets("sheet1").Select
+    Application.Goto Range("A1")
+    Selection.AutoFilter
+    
+    Rows(2).Select
+    ActiveWindow.FreezePanes = True
+    Application.Goto
+End Sub
+=====================================================================
+
+関数　IF(COUNTIF
+重複確認チェック=IF(COUNTIF($B$1:$B$21,A1)=1,"○",A1 & "×")
+=====================================================================
+=====================================================================
+=====================================================================
+=====================================================================
+=====================================================================
+
+acDataAccessPage：　データアクセスページ
+acDefault：　カレントオブジェクト(既定値)
+acDiagram：　ダイアグラム
+acForm：　フォーム
+acFunction：　関数
+acMacro：　マクロ
+acModule：　モジュール
+acQuery：　クエリ
+acReport：　レポート
+acServerView：　サーバービュー
+acStoredProcedure：　ストアアドプロシージャ
+acTable：　テーブル
+
+
+
