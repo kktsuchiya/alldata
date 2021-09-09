@@ -1,0 +1,204 @@
+Option Explicit
+
+'「予定表作成ボタン」クリック処理
+Sub ボタン1_Click()
+    Dim toolSht As Worksheet
+    Dim strYYYYMM As String
+    Dim iYoteiGyo As Integer
+    
+    '(1)ツールシートを取得する
+    Set toolSht = ThisWorkbook.Sheets("ツール")
+    
+    '(2)対象年月を取得する
+    strYYYYMM = toolSht.Range("A4") & Format(toolSht.Range("B4"), "00")
+    
+    '(3)シートが存在するかチェックする
+    If IsExistSheet(strYYYYMM) Then
+        MsgBox "すでに【 " & strYYYYMM & " 】シートは存在します。", vbExclamation, "予定表作成"
+        Exit Sub
+    End If
+    
+    '(4)シートを追加する
+    Call AddNewSheet(strYYYYMM)
+    
+    '(5)予定行数を取得する
+    iYoteiGyo = toolSht.Range("C4")
+    
+    Dim varHoliday As Variant
+    Dim iMaxHolidayRow As Integer
+    Dim i As Integer
+    
+    '(6)祝日一覧の最初の行をセットする
+    i = 9
+    
+    '(7)祝日一覧の最終行を取得する
+    Do While True
+        If toolSht.Cells(i, 1) <> "" Then
+            iMaxHolidayRow = i
+            i = i + 1
+        Else
+            Exit Do
+        End If
+    Loop
+    
+    '(8)祝日一覧を配列に取得する（9行目から入力されている最大行までのA列の値を取得）
+    varHoliday = toolSht.Range(toolSht.Cells(9, 1), toolSht.Cells(iMaxHolidayRow, 1))
+    
+    '(9)シートを解放する
+    Set toolSht = Nothing
+    
+    '(10)予定表を作成する
+    Call CreateYoteiHyo(strYYYYMM, iYoteiGyo, varHoliday)
+    
+    '(11)完了メッセージを表示する
+    MsgBox "予定表作成が完了しました。", vbInformation, "予定表作成"
+    
+End Sub
+
+'シートが存在するかチェックする
+Private Function IsExistSheet(ByVal shtName As String) As Boolean
+    IsExistSheet = False
+    
+    Dim ws As Worksheet
+    
+    For Each ws In ThisWorkbook.Worksheets
+        If ws.Name = shtName Then
+            IsExistSheet = True
+            Exit Function
+        End If
+    Next
+    
+End Function
+
+'指定された名前でシートを追加する
+Private Sub AddNewSheet(ByVal shtName As String)
+    Dim newSht As Worksheet
+    Dim iSheetCnt As Integer
+    
+    '(1)存在するシート数を取得する
+    iSheetCnt = ThisWorkbook.Sheets.Count
+    
+    '(2)存在するシートの右側に新しいシートを追加する
+    Set newSht = ThisWorkbook.Sheets.Add(after:=ThisWorkbook.Sheets(iSheetCnt))
+    
+    '(3)新しく追加したシートの名前を変更する
+    newSht.Name = shtName
+    
+    '(4)シートを解放する
+    Set newSht = Nothing
+    
+End Sub
+
+'予定表を作成する
+Private Sub CreateYoteiHyo(ByVal shtName As String, ByVal iYoteiGyo As Integer, ByRef vHoliday As Variant)
+    Dim yoteiSht As Worksheet
+    Dim i As Integer
+    Dim j As Integer
+    Dim iYear As Integer
+    Dim iMonth As Integer
+    Dim datGetumatu As Date
+    Dim iMatubi As Integer
+    Dim strDay As String
+    
+    '(1)年と月を取得する
+    iYear = Left(shtName, 4)
+    iMonth = Right(shtName, 2)
+    
+    '(2)指定年月の末日を取得する
+    datGetumatu = DateAdd("d", -1, DateAdd("m", 1, CDate(iYear & "/" & iMonth & "/1")))
+    iMatubi = Day(datGetumatu)
+    
+    '(3)予定表シートを取得する
+    Set yoteiSht = ThisWorkbook.Sheets(shtName)
+
+    '(4)値を入力する
+    With yoteiSht
+        '見出しを入力する
+        .Range("A1").Value = iYear & "年" & iMonth & "月の予定表"
+        .Range("A2").Value = "No."
+        .Range("B2").Value = "予定作業"
+        .Range("C2").Value = "開始日"
+        .Range("D2").Value = "終了日"
+        
+        '予定表No.を入力する
+        For i = 1 To iYoteiGyo
+            .Range("A" & 2 + i).Value = i
+        Next
+        
+        'カレンダーの曜日と日付を入力する
+        For i = 1 To iMatubi
+            strDay = iYear & "/" & iMonth & "/" & i
+            .Cells(1, 4 + i).Value = Format(CDate(strDay), "aaa")
+            .Cells(2, 4 + i).Value = strDay
+            .Cells(2, 4 + i).NumberFormatLocal = "d"
+        Next
+    End With
+    
+    '(5)表示形式を設定する
+    With yoteiSht
+        '開始日、終了日
+        .Range(.Cells(3, 3), .Cells(2 + iYoteiGyo, 4)).NumberFormatLocal = "yyyy/m/d"
+    End With
+    
+    '(6)文字配置を設定する
+    With yoteiSht.Range(yoteiSht.Cells(1, 1), yoteiSht.Cells(2 + iYoteiGyo, 4 + iMatubi))
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+    End With
+    With yoteiSht.Range(yoteiSht.Cells(3, 2), yoteiSht.Cells(2 + iYoteiGyo, 2))
+        .HorizontalAlignment = xlLeft
+    End With
+            
+    '(7)列幅を設定する
+    With yoteiSht
+        .Columns(1).ColumnWidth = 3.67  'No.
+        .Columns(2).ColumnWidth = 17.22 '予定作業
+        .Columns(3).ColumnWidth = 8.33  '開始日
+        .Columns(4).ColumnWidth = 8.33  '終了日
+        
+        'カレンダー幅
+        For i = 1 To iMatubi
+            .Columns(4 + i).ColumnWidth = 2.78
+        Next
+    End With
+
+            
+    '(8)背景色を設定する
+    With yoteiSht
+        .Range("A1:D2").Interior.Color = 5296274
+        
+        '土・日の背景色を設定する
+        For i = 1 To iMatubi
+            If .Cells(1, 4 + i).Value = "土" Then
+                .Range(.Cells(1, 4 + i), .Cells(2 + iYoteiGyo, 4 + i)).Interior.Color = 16777164
+            ElseIf .Cells(1, 4 + i).Value = "日" Then
+                .Range(.Cells(1, 4 + i), .Cells(2 + iYoteiGyo, 4 + i)).Interior.Color = 14526459
+            Else
+                'なにもしない
+            End If
+            
+            '祝日の背景色を設定する
+            For j = 1 To UBound(vHoliday)
+                If CDate(iYear & "/" & iMonth & "/" & i) = CDate(vHoliday(j, 1)) Then
+                    .Range(.Cells(1, 4 + i), .Cells(2 + iYoteiGyo, 4 + i)).Interior.Color = 14526459
+                    Exit For
+                End If
+            Next
+         Next
+    End With
+
+    '(9)セル結合する
+    yoteiSht.Range("A1:D1").Merge
+    
+    '(10)文字サイズを設定する
+    yoteiSht.Range("A1:D1").Font.Size = 18
+    
+    '(11)罫線を引く
+    With yoteiSht
+        .Range(.Cells(1, 1), .Cells(2 + iYoteiGyo, 4 + iMatubi)).Borders.LineStyle = True
+    End With
+
+    '(12)シートを解放する
+    Set yoteiSht = Nothing
+    
+End Sub
