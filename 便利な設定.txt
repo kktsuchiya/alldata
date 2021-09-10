@@ -1,7 +1,10 @@
+Access用
+
 Option Explicit
 
 ##########################################################################
-
+自動最適化
+##########################################################################
 Private Sub btn閉じる_Click()
     Dim strPath As String
     Dim fileSize As Long
@@ -20,10 +23,7 @@ Private Sub btn閉じる_Click()
         DoCmd.Quit
 End Sub
 ##########################################################################
-
-
-
-
+フォームサイズ、フォーム閉じる
 ##########################################################################
 Private Sub Form_Open(Cancel As Integer)
 
@@ -34,11 +34,11 @@ Private Sub Form_Open(Cancel As Integer)
 End Sub
 
 Private Sub btn閉じる_Click()
-
         DoCmd.Close acForm, Me.Name
-        
 End Sub
-
+##########################################################################
+'シフトの有効、無効
+##########################################################################
 Private Sub btnシフト有効_Click()
 
         ChangeProperty "AllowBypassKey", dbBoolean, True
@@ -54,11 +54,6 @@ Private Sub btnシフト無効_Click()
         MsgBox "シフト機能を無効にしました", vbInformation
         
 End Sub
-
-
-
-
-'シフトの有効、無効
 Function ChangeProperty(strPropName As String, varPropType, varPropValue) As Integer
 
 On Error GoTo err_ChangeProperty
@@ -84,3 +79,48 @@ err_ChangeProperty:
 
 End Function
 ##########################################################################
+BULK INSERT
+
+'インデックスを付ける
+Set DB1 = CurrentDb
+sSql "CREATE INDEX idx_Bcode ON t_table (部署コード);
+DB1.Execute sSql
+
+
+'INSERT
+DoCmd.RunSQL "INSERT INTO T_Table SELECT * FROM T_xxx"
+
+'UPDATE
+DoCmd.RunSQL "UPDATE T_Table SET zzz = 'yyy' WHERE vvv = 'xxx'"
+
+'DELETE
+DoCmd.RunSQL "DELETE * FROM T_Table WHERE vvv LIKE 'yyy'"
+
+
+'画面の描画を行わない
+Application.Echo False
+
+'ワーニング表示をしない
+DoCmd.SetWarnings False
+
+'再クエリ
+Me.Requery
+
+'更新
+Me.Refresh
+
+'再計算
+Me.Recalc
+
+'昇順並べ替え
+Me.OrderBy = "xxx"
+Me.OrderByOn = True
+
+'指定のコントロールへカーソルを戻す
+DoCmd.GoToControl ("xxx")
+
+'コンボボックスにテーブルの値を設定
+Forms.F_Form.コンボn.Value = DLookup("team", "T_Table", "num = 'zzz'")
+
+'Import
+DoCmd.TransferText acImportDelim, , "T_Table", CurrentProject.Path & "vvv\xxx.csv"
