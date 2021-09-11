@@ -1,0 +1,28 @@
+Sub renban() '連番を振る
+    Dim db As DAO.Database
+    Dim rs As Recordset
+    Dim strSQL As String: Dim renban As Long
+    
+    Set db = CurrentDb
+    strSQL = "SELECT * FROM test"
+    Set rs = db.OpenRecordset(strSQL, dbOpenDynaset)
+    'rsにレコードを格納
+
+    If rs.RecordCount <> 0 Then 'レコード数が0件でなかったらループ開始
+        renban = 1
+    Else
+        Exit Sub
+    End If
+    
+  Do
+    rs.Edit
+    rs!番号 = renban 'rsのテーブル名「番号」に数値を代入
+    rs.Update
+    renban = renban + 1
+    rs.MoveNext
+  Loop Until rs.EOF = True
+
+    rs.Close
+    Set db = Nothing: Set rs = Nothing
+    
+End Sub
