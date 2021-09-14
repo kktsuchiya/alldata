@@ -1,0 +1,16 @@
+Private Sub Dao_Link2()
+'リンクの更新
+  Dim DB As Database
+  Dim tbl As TableDef
+  
+  Set DB = OpenDatabase(Application.CurrentProject.FullName)
+  Set tbl = DB.TableDefs("T顧客マスター")
+  tbl.Connect = ";DATABASE=" & Application.CurrentProject.Path & "\\売上管理.accdb"
+  tbl.RefreshLink
+
+  DB.Close
+
+  Set DB = Nothing
+  Set tbl = Nothing
+    
+End Sub
