@@ -1,0 +1,72 @@
+他のデータベースのプロシージャを実行
+Sub module A()
+Dim acApp As Access.Application
+Set acApp = New Access.Application
+With acApp
+.OpenCurrentDatabase CurrentProject.Path & “\Test.mdb”
+.Visible = True ‘念のため
+.Application.Run “module B”
+.Quit
+End With
+Set acApp = Nothing
+
+End Sub
+
+
+
+Function 対応(座標　As　Variant,区分　As string, No as intger, 対応日 as date,予定日 As date,
+営業 As String, 曜日 As Variant) As String
+
+座標　As　Variant,　F6
+区分　As string, 　B6
+No as intger, A6 
+対応日 as date,D6
+予定日 As date,F$3 本日 
+営業 As String, F$5
+曜日 As Variant F$4
+
+Dim sheet as worksheet
+Dim 月初営業日 as date
+Dim 曜日指定日 as date
+
+
+select case　区分
+case "daily"
+
+ select Case No
+	Case 1
+
+	Case 2
+
+Case "weeklly"
+
+ select Case No
+  Case 1
+
+Case 2
+if IsEmpty(対応日)=false then
+　if 対応日=予定日 then
+　対応 =　"対応済"
+　Else
+　if　営業=　"営"　And　曜日="月" Then
+　対応 =　"〇"
+　ElseIf 営業="営" And　曜日="火"And 営業.offset(0,-1)="休" And 曜日="月" Then
+　対応 =　"〇"
+　ElseIf 営業="営" And　曜日="水"And 営業.offset(0,-1)="休" And 営業.offset(0,-2)="休" Then
+　対応 =　"〇"
+  ElseIf 営業="営" And　曜日="木"And 営業.offset(0,-1)="休" And 営業.offset(0,-2)="休"And 営業.offset(0,-3)="休" Then
+  対応 =　"〇"
+ else
+ 対応 =　""
+ end if
+ end if
+ if 対応日 >予定日　and　曜日 ＝"月" Then
+	if 営業 = "営" Then
+　　　　　　対応="対応済"
+End if
+End if
+End if
+
+End select 
+　End select
+　End　Function
