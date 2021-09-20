@@ -1,3 +1,10 @@
+Sub クエリのみ実行()
+
+    DoCmd.OpenQuery "Qテスト結合", acViewNormal, acReadOnly
+
+End Sub
+
+※既存テーブルのデータを新しいテーブルに保存
 Sub クエリ実行2()  'SQLクエリに従って新しいテーブル(New_名簿)を作成
 
     Dim db As Database
@@ -5,6 +12,32 @@ Sub クエリ実行2()  'SQLクエリに従って新しいテーブル(New_名�
     Set db = CurrentDb
     strSQL = "SELECT * INTO New_名簿 FROM 名簿 "
     strSQL = strSQL & "WHERE 性別 = '女'"
+    
+    db.Execute strSQL
+    db.Close
+    Set db = Nothing
+End Sub
+
+※更新クエリ実行し、新しいテーブルに保存
+Sub クエリ実行3()  'SQLでクエリを実行結果を新しいテーブル(test_名簿)を作成
+
+    Dim db As Database
+    Dim strSQL As String
+    Set db = CurrentDb
+    strSQL = "SELECT * INTO test_名簿 FROM Qテスト結合"
+    
+    db.Execute strSQL
+    db.Close
+    Set db = Nothing
+End Sub
+
+※更新クエリ実行し、既存テーブルに保存
+Sub クエリ実行4()  'SQLでクエリを実行し、結果を既存テーブル(test_名簿2)へ保存
+
+    Dim db As Database
+    Dim strSQL As String
+    Set db = CurrentDb
+    strSQL = "INSERT INTO test_名簿2 SELECT * FROM Qテスト結合"
     
     db.Execute strSQL
     db.Close
