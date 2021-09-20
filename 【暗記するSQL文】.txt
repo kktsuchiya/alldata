@@ -43,3 +43,19 @@ Sub クエリ実行4()  'SQLでクエリを実行し、結果を既存テーブ�
     db.Close
     Set db = Nothing
 End Sub
+
+※クエリを作らずにSQL文を実行
+Sub SetNew名簿()
+    Dim db As Database
+    
+    ' カレントデータベース セット
+    Set db = CurrentDb
+    
+    ' 抽出ワークへ全学生をセット
+    db.Execute "DELETE FROM test_名簿2", dbFailOnError
+    db.Execute "INSERT INTO test_名簿2(伝票番号)" & _
+        " SELECT 伝票番号 FROM test_名簿 ORDER BY 伝票番号", dbFailOnError
+
+    ' オブジェクト解放
+    Set db = Nothing
+End Sub
