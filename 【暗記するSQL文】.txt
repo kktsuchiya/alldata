@@ -1,0 +1,12 @@
+Sub クエリ実行2()  'SQLクエリに従って新しいテーブル(New_名簿)を作成
+
+    Dim db As Database
+    Dim strSQL As String
+    Set db = CurrentDb
+    strSQL = "SELECT * INTO New_名簿 FROM 名簿 "
+    strSQL = strSQL & "WHERE 性別 = '女'"
+    
+    db.Execute strSQL
+    db.Close
+    Set db = Nothing
+End Sub
