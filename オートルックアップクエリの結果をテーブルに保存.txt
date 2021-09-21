@@ -1,0 +1,14 @@
+
+Sub オートルックアップクエリの結果をテーブルに保存()
+    Dim strSQL As String
+    Dim db As DAO.Database
+    Dim rs As DAO.Recordset
+    Set db = CurrentDb
+    
+     db.Execute "DELETE FROM 点数テーブル2", dbFailOnError
+'    DoCmd.OpenQuery "Qオートルック点数テーブル", acViewNormal, acReadOnly
+    strSQL = "INSERT INTO 点数テーブル2 (生徒ＣＯ,名前,英語) SELECT [生徒ＣＯ],[名前],[英語] FROM Qオートルック点数テーブル"
+    db.Execute strSQL
+    
+    Set db = Nothing
+End Sub
