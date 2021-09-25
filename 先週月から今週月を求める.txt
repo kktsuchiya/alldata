@@ -1,0 +1,39 @@
+Sub dThisWeek()
+
+  '今週の期間を取得
+
+  Dim sToday As String
+  Dim dToday As Date
+
+  dToday = Date '基準日
+  Select Case Weekday(Date)
+
+  Case vbMonday
+  MsgBox dToday - 7 & " ～" & dToday & vbCrLf _
+  & "前週" & dToday - 7 & " ～" & dToday - 3
+
+  Case vbTuesday
+  MsgBox dToday - 8 & " ～" & dToday - 1 & vbCrLf _
+  & "前週" & dToday - 8 & " ～" & dToday - 4
+    
+  Case vbWednesday
+  MsgBox dToday - 9 & " ～" & dToday - 2 & vbCrLf _
+  & "前週" & dToday - 9 & " ～" & dToday - 5
+
+  Case vbThursday
+  MsgBox dToday - 10 & " ～" & dToday - 3 & vbCrLf _
+  & "前週" & dToday - 10 & " ～" & dToday - 6
+
+  Case vbFriday
+  MsgBox dToday - 11 & " ～" & dToday - 4 & vbCrLf _
+  & "前週" & dToday - 11 & " ～" & dToday - 7
+  
+  Case vbSaturday
+  MsgBox dToday - 12 & " ～" & dToday - 5 & vbCrLf _
+  & "前週" & dToday - 12 & " ～" & dToday - 8
+    
+
+  End Select
+
+
+End Sub
