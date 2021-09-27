@@ -1,0 +1,23 @@
+Sub 日付補完()
+    Dim maxrow As Long
+    
+    Range("V1").Select
+    ActiveSheet.Paste
+
+    Do While IsEmpty(ActiveCell.Value) = False
+    
+    ActiveCell.Offset(0, 1).Select
+    If ActiveCell.Offset(0, -1) > ActiveCell Then Exit Sub
+    If ActiveCell.Offset(0, -1) + 1 < ActiveCell Then
+       ActiveCell.EntireColumn.Insert
+       ActiveCell = ActiveCell.Offset(0, -1) + 1
+    End If
+    Loop
+    
+    Range("W1").CurrentRegion.Cut
+    maxrow = Cells(Rows.Count, 1).End(xlUp).Offset(1, 0).Row
+    Cells(maxrow, 1).Select
+    ActiveSheet.Paste
+
+    
+End Sub
