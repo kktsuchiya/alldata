@@ -1,0 +1,42 @@
+ヘッダ無しのCSV（「インポート定義」が必要）
+ヘッダ有りのCSV（「インポート定義」が不要）
+
+インポート
+ヘッダ無し（インポート定義を設定）
+DoCmd.TransferText acImportDelim, “CSVヘッダ無し”, “発送データ_TR”, “C:\Access\Inport_data1.csv”, False
+
+
+エクスポート
+  DoCmd.TransferText acExportDelim, "エクスポート定義の名前", "エクスポートするテーブル名", "CSVファイル名", True
+
+-------------------------------------------------------------------
+Access全テーブルのレコードをCSV出力
+-------------------------------------------------------------------
+Public Sub test() 
+    Dim conn As ADODB.Connection
+    Dim rs As ADODB.Recordset
+    Dim sql As String
+     
+    Set conn = CurrentProject.Connection
+    Set rs = New ADODB.Recordset
+     
+    sql = "SELECT NAME FROM MSYSOBJECTS WHERE TYPE=1 AND FLAGS=0 ORDER BY NAME"
+    rs.Open sql, conn
+     
+    Dim tableName As String
+     
+    Do Until rs.EOF
+       '今回はAccessテーブル名先頭8文字は不要なので除去した
+        tableName = Mid(rs!Name, 9)
+        Debug.Print tableName
+        DoCmd.TransferText acExportDelim, , rs!Name, "C:\csv\" & tableName & ".csv", True
+        rs.MoveNext
+        Loop
+     
+    rs.Close
+    Set rs = Nothing
+     
+    conn.Close
+    Set conn = Nothing
+     
+End Sub
