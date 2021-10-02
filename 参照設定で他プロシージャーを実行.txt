@@ -1,0 +1,13 @@
+Sub 参照設定で他プロシージャーを実行()
+  On Error Resume Next
+
+  Dim ref As Reference
+  Dim strFile As String
+
+  strFile = "C:\Users\wanco2\Desktop\売上管理.accdb"
+
+  Set ref = References.AddFromFile(strFile)
+  
+  Call sql2 '売上管理.accdbのプロシージャーを実行
+  
+End Sub
