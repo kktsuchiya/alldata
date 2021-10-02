@@ -1,0 +1,5 @@
+Sub テーブルデータを変数へ()
+    Dim strT As String: Dim strT2 As String
+    strT = DLookup("区分名", "区分マスタ")
+    strT2 = DLookup("区分名", "区分マスタ", "区分ＣＯ=2")
+End Sub
