@@ -1,2 +1,14 @@
 インポート、エクスポートの定義の作成方法
 エクスポートするテーブルを選択し、右クリック、エクスポート→テキストファイル、次へ「設定」する
+
+Private Sub SampleCSV()
+    Dim vPath As String     'ファイル名を代入する変数を宣言する
+    
+    'このデータベースと同じフォルダにある「Sample454」フォルダ内の
+    '「Sapmle451.txt」ファイルを指定する
+    vPath = CurrentProject.Path & "\Sample454\Sample454.txt"
+
+    '「T_Master」テーブルを指定したファイルにエクスポートする
+    DoCmd.TransferText acExportDelim,エクスポート定義, "T_Master", _
+        "test.CSV", True
+End Sub
