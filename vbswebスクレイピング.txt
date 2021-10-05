@@ -1,0 +1,39 @@
+Option Explicit
+
+
+    Dim objIE
+    Dim objLink
+
+    Set objIE = CreateObject("InternetExplorer.Application")
+    objIE.Visible = True
+
+    'IEを開く
+    objIE.navigate "http://google.co.jp/"    
+ 
+    
+    'タイトルをテキストファイルに書き出す
+    OutputText objIE.document.Title
+ 
+
+
+'テキストファイルへ出力
+Function OutputText(ByVal strMsg)
+
+    Dim objFSO
+    Dim objText
+
+    'ファイルシステムオブジェクト
+    Set objFSO = WScript.CreateObject("Scripting.FileSystemObject")
+    ’テキストファイルを開く
+    Set objText = objFSO.OpenTextFile("C:\work\title.txt", ForAppending, True)
+
+    objText.write strMsg    
+    objText.write vbCrLf
+
+    objText.close
+    
+    'オブジェクト変数をクリア
+    Set objFSO = Nothing
+    Set objText = Nothing 
+
+End Function
