@@ -1,0 +1,33 @@
+SELECT TDATE.sales_date
+,T001.sum_count AS 'code_001'
+,T002.sum_count AS 'code_002'
+,T003.sum_count AS 'code_003'
+  FROM
+  -- 日付
+  (SELECT sales_date
+   FROM t_sales
+   GROUP BY sales_date) TDATE
+  -- code=001
+  LEFT JOIN 
+    (SELECT sales_date
+     ,SUM(item_count) AS sum_count
+     FROM t_sales
+     WHERE code = '001'
+     GROUP BY sales_date) T001
+    ON TDATE.sales_date = T001.sales_date
+ -- code=002
+  LEFT JOIN 
+    (SELECT sales_date
+     ,SUM(item_count) AS sum_count
+     FROM t_sales
+     WHERE code = '002'
+     GROUP BY sales_date) T002
+    ON TDATE.sales_date = T002.sales_date
+ -- code=003
+  LEFT JOIN 
+    (SELECT sales_date
+     ,SUM(item_count) AS sum_count
+     FROM t_sales
+     WHERE code = '003'
+     GROUP BY sales_date) T003
+    ON TDATE.sales_date = T003.sales_date
