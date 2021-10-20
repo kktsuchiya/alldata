@@ -1,0 +1,2 @@
+delete from tbl_goods
+  where (id_goods,price) not in (select id_goods, max(price) from tbl_goods group by id_goods);
