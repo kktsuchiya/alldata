@@ -1,0 +1,46 @@
+Sub sql_02()
+　Dim cn As ADODB.Connection
+　Dim rs As ADODB.Recordset
+　Dim File_Name ,sql As String
+　File_Name = "c:¥Users¥User¥db.xlsx" 　'DBのフルネーム。尚、このブック上（ThisWorkbook.FullName）でもOK
+　Set cn = New ADODB.Connection
+　Set rs = New ADODB.Recordset
+　cn.Provider = "MSDASQL"
+　cn.ConnectionString = "Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};" & "DBQ=" & File_Name & "; ReadOnly=False;"
+　cn.Open
+　　sql2 = "insert into [Sheet1$] values('2019/10/10','D',10,500,500)"
+　　rs.Open sql2, cn, adOpenStatic
+　cn.Close
+　Set rs = Nothing
+　Set cn = Nothing
+End Sub
+
+7.データの変更
+データの変更にはUPDATEを使います。
+Sub sql_03()
+　Dim cn As ADODB.Connection
+　Dim rs As ADODB.Recordset
+　Dim File_Name ,sql As String
+　File_Name = "c:¥Users¥User¥db.xlsx" 　'DBのフルネーム。尚、このブック上（ThisWorkbook.FullName）でもOK
+　Set cn = New ADODB.Connection
+　Set rs = New ADODB.Recordset
+　cn.Provider = "MSDASQL"
+　cn.ConnectionString = "Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};" & "DBQ=" & File_Name & "; ReadOnly=False;"
+　cn.Open
+　　sql3 = "update [Sheet1$] set 勤務時間=6 where 名前='C'"
+　　rs.Open sql3, cn, adOpenStatic
+　cn.Close
+　Set rs = Nothing
+　Set cn = Nothing
+End Sub
+
+8.データの削除
+「DELETE」コマンドは実はExcelのシートをデータベースにしている時は使えないのです。下の様なコードはエラーが出ます。
+　sql4 = "DELETE from [Sheet1$] where 名前='C'"
+でもデータが消せない（DELETE出来ない）のは困りますよね。私見ですがExcelシートで「DELETE」が出来ないのは、番地を持ったセルの上にデータが乗っている（データに順序がある）ので、途中の１つが抜けてしまうとデータ領域が分断してしまうためか、と思っています。
+
+では「DELETE」が出来ないと困る場合はどうすれば良いか。
+１つ目の方法は、どこかの列（先頭列か最後列が適当かと思いますが）に、「DELETE」した印をつける方法です。 「UPDATE」コマンドで以下のような命令を実行します。（dele列にdeleteした印をつける事にします）
+sql="delete from [Sheet1$] where name='越後屋' and date=’2019/10/3’ " ←本当はこれをやりたい
+⇩
+sql="update [Sheet1$] set dele=’D’ where name='越後屋' and date=’2019/10/3’ "
