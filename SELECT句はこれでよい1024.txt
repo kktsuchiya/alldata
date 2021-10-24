@@ -1,0 +1,1 @@
+select Distinct [T0$].営業コード,[T0$].取引ランク,[T0$].担当者名 FROM [T0$] LEFT JOIN [T1$] ON [T0$].顧客コード = [T1$].顧客コード 
