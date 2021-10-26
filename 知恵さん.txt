@@ -1,0 +1,45 @@
+Microsoft QueryのSQLビューで試してみたら、
+改行のかわりに半角のアンダーバーが勝手に付加されてました。
+
+野菜 ←改行コードが入っている
+りんご
+↓
+野菜_りんご
+
+ダメだったらごめんなさい。
+
+ExcelのSQLは、
+「データタブ→データの取得→その他の・・・→Microsoft Queryから」
+の、「Microsoft Query」という機能のSQLビューが参考になります。
+Accessの「クエリ」と酷似した機能です。
+SQLビューは、「Microsoft Query」のメイン画面の「表示→SQL」から見ることができます。
+※バッククォートで囲まれたフィールド名やテーブル名は [ ]で囲む方法に変えてもOKです。
+詳しい使い方はこちら
+↓
+https://euc-access-excel-db.com/mag2charge/pos/Excel2000_msquery_n_pivot20170331.pdf
+P36にSQLビューの画像などあります。
+
+PDFの元記事
+https://euc-access-excel-db.com/tips/ct08_exceltruebasic/ct080101_excel_true_can/microsoft-query
+残り7日
+ベストアンサーに選ぶ
+1人がナイス！しています
+
+ナイス！
+
+osa********さん
+
+2021/10/26 18:54
+
+電話
+番号
+みたいな１セル内に2段になっている列名を持つシートを
+Microsoft Queryで覗きに行ったら、
+
+SELECT
+氏名,
+電話_番号,
+登録日
+FROM [Sheet1$]
+
+みたいなSQLが生成されてました。
