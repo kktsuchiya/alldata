@@ -1,0 +1,22 @@
+ExecuteGlobal CreateObject("Scripting.FileSystemObject").OpenTextFile("MouseController.vbs", 1, False).ReadAll()
+
+'***************************************
+'Simplae Test
+'***************************************
+Dim myPoint, x, y
+myPoint = API_GetMessagePos
+x = myPoint(0)
+y = myPoint(1)
+MsgBox "x = " & x & vbCrLf & "y = " & y
+
+MouseMove x + 100, y + 100
+MouseClick 
+MsgBox "クリックしました"
+
+MouseMove 1000, 500
+MouseClickShift
+MsgBox "Shift + クリックしました"
+
+MouseMove 1000, 300
+DoubleClick
+MsgBox "ダブルクリックしました"
