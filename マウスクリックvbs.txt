@@ -20,3 +20,95 @@ MsgBox "Shift + クリックしました"
 MouseMove 1000, 300
 DoubleClick
 MsgBox "ダブルクリックしました"
+
+
+Set Excel = WScript.CreateObject("Excel.Application")
+
+'キーコード
+Const VK_SHIFT = &H10
+
+'マウス定数
+Const MOUSEEVENTF_ABSOLUTE = &H8000
+Const MOUSE_MOVE = &H1
+Const MOUSEEVENTF_LEFTDOWN = &H2
+COnst MOUSEEVENTF_LEFTUP = &H4
+
+'クリック
+Sub MouseClick
+    Dim dwFlags
+    dwFlags = MOUSEEVENTF_LEFTDOWN Or MOUSEEVENTF_LEFTUP
+    Call API_mouse_event(dwFlags, 0, 0, 0, 0)
+    WScript.Sleep 100
+End Sub
+
+'SHIFT+クリック
+Sub MouseClickShift
+    Dim dwFlags
+    
+    Call API_keybd_event(VK_SHIFT,0,1,0)
+    dwFlags = MOUSEEVENTF_LEFTDOWN Or MOUSEEVENTF_LEFTUP
+    Call API_mouse_event(dwFlags, 0, 0, 0, 0)
+    Call API_keybd_event(VK_SHIFT,0,3,0)
+    WScript.Sleep 100
+End Sub
+
+'ダブルクリック
+Sub DoubleClick
+    MouseClick
+    MouseClick
+End Sub
+
+'マウスポインタ移動
+Sub MouseMove(x, y)
+    Dim pos_x, pos_y, dwFlags
+    Const SCREEN_X = 1024
+    Const SCREEN_Y = 768
+    
+    dwFlags = MOUSEEVENTF_ABSOLUTE Or MOUSE_MOVE
+    pos_x = Int(x * 65535 / SCREEN_X)
+    pos_y = Int(y * 65535 / SCREEN_Y)
+    Call API_mouse_event(dwFlags, pos_x, pos_y, 0, 0)
+    WScript.Sleep 100
+End Sub
+
+
+'************************
+'APIを叩く処理
+'************************
+Sub API_mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo)
+    Dim strFunction
+    Const API_STRING = "CALL(""user32"",""mouse_event"",""JJJJJj"", $1, $2, $3, $4, $5)"
+    strFunction = Replace(Replace(Replace(Replace(Replace(API_STRING, "$1", dwFlags), "$2", dx), "$3", dy), "$4", dwData), "$5", dwExtraInfo)
+    Call Excel.ExecuteExcel4Macro(strFunction)
+End Sub
+
+Sub API_keybd_event(bVk, bScan, dwFlags, dwExtraInfo)
+    Dim strFunction
+    Const API_STRING = "CALL(""user32"",""keybd_event"",""JJJJJ"", $1, $2, $3, $4)"
+    strFunction = Replace(Replace(Replace(Replace(API_STRING, "$1", bVk), "$2", bScan), "$3", dwFlags), "$4", dwExtraInfo)
+    Call Excel.ExecuteExcel4Macro(strFunction)
+End Sub
+
+Function API_GetMessagePos()
+    Dim ret, strHex, x, y
+    Dim strFunction
+    Const API_STRING = "CALL(""user32"",""GetMessagePos"",""J"")"
+    strFunction = API_STRING
+    ret = Excel.ExecuteExcel4Macro(strFunction)
+    strHex = Right("00000000" & Hex(ret), 8)
+    x = CLng("&H" & Right(strHex, 4))
+    y = CLng("&H" &  Left(strHex, 4))
+    API_GetMessagePos = Array(x, y)
+End Function
+
+
+
+'************************
+'Sendkey
+'************************
+Set WshShell=Wscript.CreateObject("Wscript.Shell")
+WshShell.Run("notepad")
+WScript.Sleep(2000)
+WshShell.SendKeys("I have a pen")
+WshShell.SendKeys("{ENTER}")
+WshShell.SendKeys("I am a pen")
