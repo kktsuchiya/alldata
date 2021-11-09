@@ -1,0 +1,10 @@
+Option Explicit
+Dim Excel, x, y
+Set Excel= WScript.CreateObject("Excel.Application")
+x= "644"
+y= "221"
+Excel.ExecuteExcel4Macro ( _
+    "CALL(""user32"",""SetCursorPos"",""JJJ""," & x & "," & y & ")")
+' Left Click
+    Excel.ExecuteExcel4Macro("CALL(""User32"",""mouse_event"",""JJJJJJ""," & "2" & ")")
+    Excel.ExecuteExcel4Macro("CALL(""User32"",""mouse_event"",""JJJJJJ""," & "4" & ")")
