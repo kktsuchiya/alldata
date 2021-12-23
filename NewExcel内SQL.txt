@@ -1,0 +1,39 @@
+Sub getDataBySQL()
+
+    Dim cn As Object: Dim strCn As String: Dim i, row, col As Long
+    Dim strPath As String, sql As String, rs As Object, cmd As Object, strSQLtype As String
+    Dim wsMe As Worksheet
+    Set wsMe = ThisWorkbook.Sheets("SQL")
+    row = 6
+    col = 1
+
+    Set cn = CreateObject("ADODB.Connection")    '接続オブジェクトを作成する
+    Set rs = CreateObject("ADODB.Recordset")    'レコードセットオブジェクトを作成
+    Set cmd = CreateObject("ADODB.Command")
+    strPath = ThisWorkbook.FullName    '自分自身のファイルにアクセスする
+    strCn = "provider=Microsoft.ACE.OLEDB.12.0;" & _
+    "extended properties=Excel 12.0 Macro;data source=" & strPath 'マクロブック(.xlsm)の場合
+    '"extended properties=Excel 12.0 xml;data source=" & strPath　'Excel(.xlsx)の場合
+    cn.Open strCn    'データベースに接続する
+    Set cmd.ActiveConnection = cn
+    
+    sql = wsMe.Shapes("SQLTEXT1").TextFrame.Characters.Text 'Excelシート内にテキストボックス作成し、「SQLTEXT1」とオブジェクト名を変えてください。
+    cmd.CommandText = sql
+    Set rs = cmd.Execute 'SQLを実行してデータを取得する
+'    rs.Open sql, cn    'SQLを実行してデータを取得する
+
+    wsMe.Cells(row, col).CurrentRegion.Clear     'データを削除する
+
+    For i = 1 To rs.Fields.Count '■タイトル記載
+
+       wsMe.Cells(row, i) = rs.Fields(i - 1).Name
+
+    Next i
+
+    wsMe.Cells(row + 1, col).CopyFromRecordset rs      'レコードセットのデータを貼り付ける
+    cn.Close
+'    rs.Close
+    Columns("A:Z").AutoFit
+    Set cn = Nothing
+    Set rs = Nothing
+End Sub
