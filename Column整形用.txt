@@ -1,0 +1,38 @@
+Sub DWH_Column()
+  Dim reg As Object: Dim rep As String: Dim v1 As String: Dim v2 As String
+  Set reg = CreateObject("VBScript.RegExp")
+  Dim pat As String: Dim i As Long: Dim lastcolumn1, lastcolumn2, lastcolumn3, lastcolumn4 As Long
+    lastcolumn1 = Sheets(1).Cells(1, Columns.Count).End(xlToLeft).Column
+    lastcolumn2 = Sheets(2).Cells(1, Columns.Count).End(xlToLeft).Column
+    lastcolumn3 = Sheets(3).Cells(1, Columns.Count).End(xlToLeft).Column
+    lastcolumn4 = Sheets(4).Cells(1, Columns.Count).End(xlToLeft).Column
+    reg.Pattern = "([0-9]+_[0-9]+)"
+    reg.Global = True
+    reg.IgnoreCase = True
+  For i = 1 To lastcolumn1
+    v1 = Sheet1.Cells(1, i).Value    '検索対象
+'    v2 = Sheet1.Range("A6").Value      '置換後の文字列
+    rep = reg.Replace(v1, "")
+    Sheet1.Cells(1, i).Value = rep
+   Next i
+ i = 0
+  For i = 1 To lastcolumn2
+     v1 = Sheet2.Cells(1, i).Value    '検索対象
+     rep = reg.Replace(v1, "")
+     Sheet2.Cells(1, i).Value = rep
+  Next i
+ i = 0
+  For i = 1 To lastcolumn3
+     v1 = Sheet3.Cells(1, i).Value    '検索対象
+     rep = reg.Replace(v1, "")
+     Sheet3.Cells(1, i).Value = rep
+  Next i
+ i = 0
+  For i = 1 To lastcolumn4
+     v1 = Sheet4.Cells(1, i).Value    '検索対象
+     rep = reg.Replace(v1, "")
+     Sheet4.Cells(1, i).Value = rep
+  Next i
+   
+   Set reg = Nothing
+End Sub
